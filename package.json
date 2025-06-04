@@ -1,0 +1,20 @@
+{
+  "name": "urlshortener",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/gyizem/UrlShortener#readme",
+  "bugs": {
+    "url": "https://github.com/gyizem/UrlShortener/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gyizem/UrlShortener.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd url-shortener-frontend && npm run build && cd .. && cd url-shortener-backend && npm start"
+  }
+}
