@@ -6,6 +6,7 @@ app.use(express.json());
 const pool= require("./db");
 const { v4: uuidv4} = require('uuid');
 const randomAlias = require("./helpers/randomAlias.js")
+const path = require("path")
 
 const BASE_URL = process.env.BASE_URL
 
@@ -15,16 +16,11 @@ app.post("/shorten",async(req,res)=>{
         originalUrl = "https://"+originalUrl
     }
     const alias = req.body.alias;
+    const finalAlias = alias?.trim() || randomAlias();
     if (!/^[\w-]+$/.test(finalAlias)) {
         return res.status(400).json({ error: "Invalid alias format" });
     }
     const id = uuidv4();
-    let finalAlias;
-    if(alias){
-        finalAlias = alias;
-    }else {
-        finalAlias= randomAlias();
-    }
     try{
         await pool.query("INSERT INTO urls (id,original_url, alias, click_count) VALUES ($1, $2, $3, 0)",[id, originalUrl, finalAlias]);
         res.json({ short_url: BASE_URL+finalAlias});
@@ -92,6 +88,12 @@ app.get("/:alias", async(req,res)=> {
         console.error(err);
         res.status(500).json({ error: "Internal server error"}); 
     }
+});
+
+app.use(express.static(path.join(__dirname, '../url-shortener-frontend/dist')))
+
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../url-shortener-frontend/dist/index.html'));
 });
 
 app.listen(process.env.PORT || 3000, ()=> {
